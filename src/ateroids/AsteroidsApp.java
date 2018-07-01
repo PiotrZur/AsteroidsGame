@@ -23,11 +23,13 @@ public class AsteroidsApp extends Application {
     private List<GameObject> enemies = new ArrayList<>();
     private GameObject player;
 
+    public AssetLoader assetLoader = new AssetLoader();
+
     private Parent createContent() {
         root = new Pane();
         root.setPrefSize(600.0, 600.0);
 
-        player = new Player();
+        player = new Player(assetLoader);
         player.setVelocity(new Point2D(1, 0));
 
         addGameObject(player, 300, 300);
@@ -41,9 +43,7 @@ public class AsteroidsApp extends Application {
         return root;
     }
     private void addGameObject(GameObject object, double x, double y) {
-        object.getView().setTranslateX(x);
-        object.getView().setTranslateY(y);
-
+        object.move(x, y);
         root.getChildren().add(object.getView());
     }
     private void addBullet(Bullet bullet, double x, double y) {
@@ -73,12 +73,12 @@ public class AsteroidsApp extends Application {
         player.update();
 
         if(Math.random() < 0.01) {
-           addEnemy(new Enemy(), Math.random() * root.getPrefWidth(), Math.random()*root.getPrefHeight());
+           addEnemy(new Enemy(assetLoader), Math.random() * root.getPrefWidth(), Math.random()*root.getPrefHeight());
         }
     }
     @Override
     public void start(Stage stage) {
-        stage.setTitle("Hello World");
+        stage.setTitle("Asteroid Game");
         stage.setScene(new Scene(createContent()));
         stage.getScene().setOnKeyPressed(event ->  {
             if(event.getCode() == KeyCode.LEFT) {
@@ -86,9 +86,9 @@ public class AsteroidsApp extends Application {
             } else if (event.getCode() == KeyCode.RIGHT) {
                 player.rotateRight();
             } else if (event.getCode() == KeyCode.SPACE) {
-                Bullet bullet = new Bullet();
+                Bullet bullet = new Bullet(assetLoader);
                 bullet.setVelocity(player.getVelocity().normalize().multiply(5.0));
-                addBullet(bullet, player.getView().getTranslateX(), player.getView().getTranslateY());
+                addBullet(bullet, player.getView().getTranslateX() + player.getWidth()/2 + Math.cos(Math.toRadians(player.getRotation()))*player.getWidth()/2, player.getView().getTranslateY() + player.getHeight()/2 + Math.sin(Math.toRadians(player.getRotation()))*player.getWidth()/2);
             }
         });
         stage.show();

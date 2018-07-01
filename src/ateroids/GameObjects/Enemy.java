@@ -1,10 +1,11 @@
 package ateroids.GameObjects;
 
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
+import ateroids.AssetLoader;
+import javafx.scene.image.ImageView;
+
 
 public class Enemy extends GameObject {
-    public Enemy() {
-        super(new Circle(20, 20, 20, Color.RED));
+    public Enemy(AssetLoader assetLoader) {
+        super(new ImageView(assetLoader.getEnemy()), 70, 70);
     }
 }

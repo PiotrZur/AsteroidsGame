@@ -1,10 +1,11 @@
 package ateroids.GameObjects;
 
+import ateroids.AssetLoader;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 public class Bullet extends GameObject {
-    public Bullet() {
-        super(new Circle(5, 5, 5, Color.GREEN));
+    public Bullet(AssetLoader assetLoader) {
+        super(new Circle(0, 0, 5, Color.YELLOW), 5, 5);
     }
 }

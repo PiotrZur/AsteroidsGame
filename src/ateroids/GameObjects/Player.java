@@ -1,10 +1,11 @@
 package ateroids.GameObjects;
 
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import ateroids.AssetLoader;
+import javafx.scene.image.ImageView;
+
 
 public class Player extends GameObject {
-    public Player() {
-        super(new Rectangle(30, 30, Color.PURPLE));
+    public Player(AssetLoader assetLoader) {
+        super(new ImageView(assetLoader.getPlayer()), 70, 70);
     }
 }
