@@ -21,7 +21,8 @@ public class AsteroidsApp extends Application {
     private Pane root;
     private List<GameObject> bullets = new ArrayList<>();
     private List<GameObject> enemies = new ArrayList<>();
-    private GameObject player;
+    private Player player;
+    private UI ui;
 
     public AssetLoader assetLoader = new AssetLoader();
 
@@ -29,8 +30,11 @@ public class AsteroidsApp extends Application {
         root = new Pane();
         root.setPrefSize(600.0, 600.0);
 
+
         player = new Player(assetLoader);
         player.setVelocity(new Point2D(1, 0));
+
+        ui = new UI(assetLoader, root, player);
 
         addGameObject(player, 300, 300);
         AnimationTimer timer = new AnimationTimer() {
@@ -62,6 +66,7 @@ public class AsteroidsApp extends Application {
                    enemy.setAlive(false);
 
                    root.getChildren().removeAll(bullet.getView(), enemy.getView());
+                   ui.addScore(10);
                }
             }
         }
