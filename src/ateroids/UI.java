@@ -25,11 +25,11 @@ public class UI {
 
         ImageView background = new ImageView(assetLoader.getBackground());
 
-        Text controls = new Text(10, 570, "Rotate ship: ←→ Fire: SPACE");
+        Text controls = new Text(15, Defines.SCREEN_HEIGHT - 15, "Rotate ship: ←→     Fire: SPACE     Exit: ESCAPE");
         controls.setFont(new Font("Comic Sans MS Bold", 20));
         controls.setFill(Color.YELLOW);
 
-        this.scoreMeter = new Text(450, 40, "Score: " + Integer.toString(score));
+        this.scoreMeter = new Text(Defines.SCREEN_WIDTH - 150, 35, "Score: " + Integer.toString(score));
         scoreMeter.setFont(new Font("Comic Sans MS Bold", 20));
         scoreMeter.setFill(Color.YELLOW);
 
@@ -42,8 +42,8 @@ public class UI {
         healthBar.getChildren().clear();
         for(int i = 0; i < player.getHealth(); i++) {
             ImageView icon =  new ImageView(assetLoader.getHealth());
-            icon.setTranslateX(10 + 40 * i);
-            icon.setTranslateY(10);
+            icon.setTranslateX(15 + (10 + assetLoader.getHealth().getWidth()) * i);
+            icon.setTranslateY(15);
             healthBar.getChildren().add(icon);
         }
 

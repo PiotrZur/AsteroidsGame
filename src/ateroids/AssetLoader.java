@@ -13,9 +13,9 @@ public class AssetLoader {
     private WritableImage writableBuffer;
 
     public AssetLoader() {
-        player = new Image("player.png", 80, 80, true, true);
+        player = new Image("player.png", 0.1 * Defines.SCREEN_WIDTH, 0.1 * Defines.SCREEN_HEIGHT, true, true);
 
-        health = new Image("healthbar.png", 30, 30, true, true);
+        health = new Image("healthbar.png", 0.05 * Defines.SCREEN_WIDTH, 0.05 * Defines.SCREEN_HEIGHT, true, true);
 
         enemy = new Image("asteroids.png");
         writableBuffer = new WritableImage(enemy.getPixelReader(), 0, 0, 70, 70);
@@ -23,7 +23,7 @@ public class AssetLoader {
 
 //        bullet = new Image("player.png");
 
-        background = new Image("background.jpg");
+        background = new Image("background.jpg", Defines.SCREEN_WIDTH, Defines.SCREEN_HEIGHT, false, false);
 
     }
 

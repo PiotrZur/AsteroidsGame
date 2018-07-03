@@ -28,7 +28,7 @@ public class AsteroidsApp extends Application {
 
     private Parent createContent() {
         root = new Pane();
-        root.setPrefSize(600.0, 600.0);
+        root.setPrefSize(Defines.SCREEN_WIDTH, Defines.SCREEN_HEIGHT);
 
 
         player = new Player(assetLoader);
@@ -36,7 +36,7 @@ public class AsteroidsApp extends Application {
 
         ui = new UI(assetLoader, root, player);
 
-        addGameObject(player, 300, 300);
+        addGameObject(player, Defines.SCREEN_WIDTH/2, Defines.SCREEN_HEIGHT/2);
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -66,7 +66,7 @@ public class AsteroidsApp extends Application {
                    enemy.setAlive(false);
 
                    root.getChildren().removeAll(bullet.getView(), enemy.getView());
-                   ui.addScore(10);
+                   ui.addScore(Defines.SCORE);
                }
             }
         }
@@ -77,7 +77,7 @@ public class AsteroidsApp extends Application {
         enemies.forEach(GameObject::update);
         player.update();
 
-        if(Math.random() < 0.01) {
+        if(Math.random() < Defines.ENEMY_SPAWN_RATE) {
            addEnemy(new Enemy(assetLoader), Math.random() * root.getPrefWidth(), Math.random()*root.getPrefHeight());
         }
     }
@@ -85,6 +85,7 @@ public class AsteroidsApp extends Application {
     public void start(Stage stage) {
         stage.setTitle("Asteroid Game");
         stage.setScene(new Scene(createContent()));
+        stage.setFullScreen(Defines.FULLSCREEN);
         stage.getScene().setOnKeyPressed(event ->  {
             if(event.getCode() == KeyCode.LEFT) {
                 player.rotateLeft();
@@ -92,8 +93,10 @@ public class AsteroidsApp extends Application {
                 player.rotateRight();
             } else if (event.getCode() == KeyCode.SPACE) {
                 Bullet bullet = new Bullet(assetLoader);
-                bullet.setVelocity(player.getVelocity().normalize().multiply(5.0));
+                bullet.setVelocity(player.getVelocity().normalize().multiply(15.0));
                 addBullet(bullet, player.getView().getTranslateX() + player.getWidth()/2 + Math.cos(Math.toRadians(player.getRotation()))*player.getWidth()/2, player.getView().getTranslateY() + player.getHeight()/2 + Math.sin(Math.toRadians(player.getRotation()))*player.getWidth()/2);
+            } else if (event.getCode() == KeyCode.ESCAPE) {
+                System.exit(0);
             }
         });
         stage.show();
