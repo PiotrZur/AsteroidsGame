@@ -1,5 +1,6 @@
 package ateroids.GameObjects;
 
+import ateroids.Defines;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
@@ -44,19 +45,13 @@ public class GameObject {
         this.alive = alive;
     }
 
-    public void rotateRight() {
-        Rotate rotate = new Rotate(10, width/2, height/2);
+    public void rotate(double value) {
+        Rotate rotate = new Rotate(value, width/2, height/2);
         view.getTransforms().add(rotate);
-        addRotation(10);
+        addRotation(value);
         this.setVelocity(new Point2D(Math.cos(Math.toRadians(this.getRotation())), Math.sin(Math.toRadians(this.getRotation()))));
+    }
 
-    }
-    public void rotateLeft() {
-        Rotate rotate = new Rotate(-10, width/2, height/2 );
-        view.getTransforms().add(rotate);
-        addRotation(-10);
-        this.setVelocity(new Point2D(Math.cos(Math.toRadians(this.getRotation())), Math.sin(Math.toRadians(this.getRotation()))));
-    }
     public Bounds getBounds() {
         return this.view.getBoundsInParent();
     }
@@ -68,7 +63,7 @@ public class GameObject {
         view.setTranslateY(view.getTranslateY() + y);
     }
 
-    public void addRotation(double value) {
+    private void addRotation(double value) {
         rotation += value;
         if(rotation > 360) {
             rotation -= 360;
@@ -87,5 +82,21 @@ public class GameObject {
 
     public double getHeight() {
         return height;
+    }
+    public boolean isOutOfScreen() {
+        if(view.getTranslateX() > Defines.SCREEN_WIDTH) {
+            move(-1 * Defines.SCREEN_WIDTH, 0);
+            return true;
+        } else if (view.getTranslateX() < 0 ) {
+            move(Defines.SCREEN_WIDTH, 0);
+            return true;
+        } else if (view.getTranslateY() > Defines.SCREEN_HEIGHT) {
+            move(0, -1 * Defines.SCREEN_HEIGHT);
+            return true;
+        } else if (view.getTranslateY() < 0) {
+            move(0, Defines.SCREEN_HEIGHT);
+            return true;
+        }
+        return false;
     }
 }

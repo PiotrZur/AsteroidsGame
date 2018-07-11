@@ -6,7 +6,6 @@ import javafx.scene.image.WritableImage;
 public class AssetLoader {
     private Image player;
     private Image enemy;
-//    private Image bullet;
     private Image background;
     private Image health;
 
@@ -20,8 +19,6 @@ public class AssetLoader {
         enemy = new Image("asteroids.png");
         writableBuffer = new WritableImage(enemy.getPixelReader(), 0, 0, 70, 70);
         enemy = writableBuffer;
-
-//        bullet = new Image("player.png");
 
         background = new Image("background.jpg", Defines.SCREEN_WIDTH, Defines.SCREEN_HEIGHT, false, false);
 
@@ -39,10 +36,6 @@ public class AssetLoader {
 
         return enemy;
     }
-
-//    public Image getBullet() {
-//        return bullet;
-//    }
 
     public Image getBackground() {
         return background;
