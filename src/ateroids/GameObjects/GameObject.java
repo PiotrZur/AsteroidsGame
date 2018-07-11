@@ -4,6 +4,7 @@ import ateroids.Defines;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.transform.Rotate;
 
 public class GameObject {
@@ -14,10 +15,6 @@ public class GameObject {
     private boolean alive;
     private double rotation;
 
-    public double getRotation() {
-        return rotation;
-    }
-
     public GameObject(Node view, double width, double height) {
         this.view = view;
         this.velocity = new Point2D(0, 0);
@@ -25,7 +22,13 @@ public class GameObject {
         this.height = height;
         this.alive = true;
         this.rotation = 0;
+
     }
+    public double getRotation() {
+        return rotation;
+    }
+
+
 
     public void update() {
         this.move(velocity.getX(), velocity.getY());
@@ -98,5 +101,9 @@ public class GameObject {
             return true;
         }
         return false;
+    }
+
+    public void setView(Node view) {
+        this.view = view;
     }
 }

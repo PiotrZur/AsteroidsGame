@@ -3,11 +3,14 @@ package ateroids;
 import ateroids.GameObjects.*;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -18,6 +21,7 @@ public class AsteroidsApp extends Application {
     private Pane root;
     private List<GameObject> bullets = new ArrayList<>();
     private List<Enemy> enemies = new ArrayList<>();
+    private AnimatedImage explosion;
     private Player player;
     private UI ui;
 
@@ -56,9 +60,14 @@ public class AsteroidsApp extends Application {
     }
 
     private void addEnemy(Enemy enemy, double x, double y) {
-        enemy.setVelocity(new Point2D(1, 0));
-        enemies.add(enemy);
-        addGameObject(enemy, x, y);
+        if(x > player.getView().getTranslateX() + player.getWidth() * 2 || x < player.getView().getTranslateX() - player.getWidth()) {
+            if(y > player.getView().getTranslateY() + player.getHeight() * 2 || y < player.getView().getTranslateX() - player.getHeight()) {
+                enemy.setVelocity(new Point2D(Math.random(), Math.random()));
+                enemies.add(enemy);
+                addGameObject(enemy, x, y);
+            }
+        }
+
     }
 
     private void onUpdate() {
@@ -80,6 +89,17 @@ public class AsteroidsApp extends Application {
             enemy.isOutOfScreen();
             if (player.isColliding(enemy)) {
                 player.hit();
+                explosion = new AnimatedImage(new Image("explosion.png"), 19, 64, 1000000000, 2);
+                explosion.getShowedImage().setTranslateX(player.getView().getTranslateX());
+                explosion.getShowedImage().setTranslateY(player.getView().getTranslateY());
+                root.getChildren().addAll(explosion.getShowedImage());
+
+                for(Enemy enemyToRemowe : enemies) {
+                        enemyToRemowe.setAlive(false);
+                        root.getChildren().removeAll(enemyToRemowe.getView());
+                }
+                enemies.clear();
+                break;
             }
         }
 
@@ -92,9 +112,17 @@ public class AsteroidsApp extends Application {
         player.update();
         player.isOutOfScreen();
 
+        if(explosion != null && explosion.isRunning()) {
+            explosion.animate();
+        } else if (explosion != null) {
+            root.getChildren().removeAll(explosion.getShowedImage());
+            explosion = null;
+        }
+
         if (Math.random() < Defines.ENEMY_SPAWN_RATE) {
             addEnemy(new Enemy(assetLoader), Math.random() * root.getPrefWidth(), Math.random() * root.getPrefHeight());
         }
+        ui.update();
     }
 
     @Override
