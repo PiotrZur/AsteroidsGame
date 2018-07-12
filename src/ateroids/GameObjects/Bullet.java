@@ -5,6 +5,7 @@ import ateroids.Defines;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
+// 
 public class Bullet extends GameObject {
     private static final double SIZE = 0.003 * Defines.SCREEN_WIDTH;
     public Bullet(AssetLoader assetLoader) {

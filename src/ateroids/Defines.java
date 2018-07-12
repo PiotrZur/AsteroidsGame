@@ -8,6 +8,7 @@ public class Defines {
     public static final int SCORE = 10;
     public static final double ENEMY_SPAWN_RATE = 0.03;
     public static final boolean FULLSCREEN = false;
+    public static final int INITIAL_HEALTH = 5;
 
     static {
 //        SCREEN_WIDTH = Screen.getPrimary().getVisualBounds().getWidth();

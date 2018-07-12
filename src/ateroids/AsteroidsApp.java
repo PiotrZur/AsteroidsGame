@@ -7,10 +7,14 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -71,6 +75,14 @@ public class AsteroidsApp extends Application {
     }
 
     private void onUpdate() {
+        if(player.getHealth()<= 0) {
+            ui.showGameOverText();
+            root.getChildren().removeAll(player.getView());
+            ui.hide();
+
+        } else  {
+
+
         for (GameObject bullet : bullets) {
             for (Enemy enemy : enemies) {
                 if (bullet.isColliding(enemy)) {
@@ -112,17 +124,19 @@ public class AsteroidsApp extends Application {
         player.update();
         player.isOutOfScreen();
 
+
+
+        if (Math.random() < Defines.ENEMY_SPAWN_RATE) {
+            addEnemy(new Enemy(assetLoader), Math.random() * root.getPrefWidth(), Math.random() * root.getPrefHeight());
+        }
+        ui.update();
+        }
         if(explosion != null && explosion.isRunning()) {
             explosion.animate();
         } else if (explosion != null) {
             root.getChildren().removeAll(explosion.getShowedImage());
             explosion = null;
         }
-
-        if (Math.random() < Defines.ENEMY_SPAWN_RATE) {
-            addEnemy(new Enemy(assetLoader), Math.random() * root.getPrefWidth(), Math.random() * root.getPrefHeight());
-        }
-        ui.update();
     }
 
     @Override
@@ -141,6 +155,17 @@ public class AsteroidsApp extends Application {
                 addBullet(bullet, player.getView().getTranslateX() + player.getWidth() / 2 + Math.cos(Math.toRadians(player.getRotation())) * player.getWidth() / 2, player.getView().getTranslateY() + player.getHeight() / 2 + Math.sin(Math.toRadians(player.getRotation())) * player.getWidth() / 2);
             } else if (event.getCode() == KeyCode.ESCAPE) {
                 System.exit(0);
+            } else if (event.getCode() == KeyCode.ENTER) {
+                if(player.getHealth() <= 0) {
+                    player.setHealth(Defines.INITIAL_HEALTH);
+                    player.getView().setTranslateX(Defines.SCREEN_WIDTH / 2);
+                    player.getView().setTranslateX(Defines.SCREEN_HEIGHT / 2);
+                    root.getChildren().add(player.getView());
+                    ui.show();
+                    ui.setScore(0);
+                    ui.hideGameOverText();
+
+                }
             }
         });
         stage.show();
