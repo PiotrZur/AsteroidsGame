@@ -8,26 +8,21 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 
 public class UI {
-    private AssetLoader assetLoader;
     private Pane root;
-    private Player player;
     private StackPane healthBar;
     private Text scoreMeter;
     private Text controls;
     private int score;
     private Group gameOverUI;
 
-    public UI(AssetLoader assetLoader, Pane root, Player player) {
-        this.assetLoader = assetLoader;
+    public UI(Pane root) {
         this.root = root;
-        this.player = player;
         this.score = 0;
         this.healthBar = new StackPane();
 
-        ImageView background = new ImageView(assetLoader.getBackground());
+        ImageView background = new ImageView(AssetLoader.getInstance().getBackground());
 
         this.controls = new Text(15, Defines.SCREEN_HEIGHT - 15, "Rotate ship: ←→     Fire: SPACE     Exit: ESCAPE");
         controls.setFont(new Font("Comic Sans MS Bold", 20));
@@ -45,9 +40,9 @@ public class UI {
 
     public void update() {
         healthBar.getChildren().clear();
-        for (int i = 0; i < player.getHealth(); i++) {
-            ImageView icon = new ImageView(assetLoader.getHealth());
-            icon.setTranslateX(15 + (10 + assetLoader.getHealth().getWidth()) * i);
+        for (int i = 0; i < Player.getInstance().getHealth(); i++) {
+            ImageView icon = new ImageView(AssetLoader.getInstance().getHealth());
+            icon.setTranslateX(15 + (10 + AssetLoader.getInstance().getHealth().getWidth()) * i);
             icon.setTranslateY(15);
             healthBar.getChildren().add(icon);
         }
@@ -89,7 +84,6 @@ public class UI {
             yourScore.setFill(Color.YELLOW);
 
             Text gameOverControls = new Text(0, 0, "Press ENTER to play again press ESC to exit");
-//        gameOverControls.setTextAlignment(TextAlignment.CENTER);
             gameOverControls.setX((Defines.SCREEN_WIDTH - gameOverControls.getLayoutBounds().getWidth()) / 2);
             gameOverControls.setY(yourScore.getLayoutBounds().getHeight() + yourScore.getY());
             gameOverControls.setFont(new Font("Comic Sans MS Bold", 20));
@@ -98,8 +92,8 @@ public class UI {
             gameOverUI.getChildren().addAll(gameOver, yourScore, gameOverControls);
             root.getChildren().add(gameOverUI);
         } else {
-            if(!root.getChildren().contains(gameOverUI))
-            root.getChildren().add(gameOverUI);
+            if (!root.getChildren().contains(gameOverUI))
+                root.getChildren().add(gameOverUI);
         }
     }
 

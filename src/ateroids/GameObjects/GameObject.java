@@ -4,9 +4,9 @@ import ateroids.Defines;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.transform.Rotate;
 
+// Parent class for all objects in game, controls movement, rotation and collision.
 public class GameObject {
     private Node view;
     private Point2D velocity;
@@ -24,17 +24,13 @@ public class GameObject {
         this.rotation = 0;
 
     }
-    public double getRotation() {
-        return rotation;
-    }
-
-
-
     public void update() {
         this.move(velocity.getX(), velocity.getY());
     }
 
-    public boolean isDead() { return !alive;}
+    public boolean isDead() {
+        return !alive;
+    }
 
     public Point2D getVelocity() {
         return velocity;
@@ -49,7 +45,7 @@ public class GameObject {
     }
 
     public void rotate(double value) {
-        Rotate rotate = new Rotate(value, width/2, height/2);
+        Rotate rotate = new Rotate(value, width / 2, height / 2);
         view.getTransforms().add(rotate);
         addRotation(value);
         this.setVelocity(new Point2D(Math.cos(Math.toRadians(this.getRotation())), Math.sin(Math.toRadians(this.getRotation()))));
@@ -58,9 +54,11 @@ public class GameObject {
     public Bounds getBounds() {
         return this.view.getBoundsInParent();
     }
+
     public boolean isColliding(GameObject another) {
         return this.getBounds().intersects(another.getBounds());
     }
+
     public void move(double x, double y) {
         view.setTranslateX(view.getTranslateX() + x);
         view.setTranslateY(view.getTranslateY() + y);
@@ -68,9 +66,9 @@ public class GameObject {
 
     private void addRotation(double value) {
         rotation += value;
-        if(rotation > 360) {
+        if (rotation > 360) {
             rotation -= 360;
-        } else if (rotation < 0 ) {
+        } else if (rotation < 0) {
             rotation += 360;
         }
     }
@@ -86,11 +84,16 @@ public class GameObject {
     public double getHeight() {
         return height;
     }
+
+    public double getRotation() {
+        return rotation;
+    }
+
     public boolean isOutOfScreen() {
-        if(view.getTranslateX() > Defines.SCREEN_WIDTH) {
+        if (view.getTranslateX() > Defines.SCREEN_WIDTH) {
             move(-1 * Defines.SCREEN_WIDTH, 0);
             return true;
-        } else if (view.getTranslateX() < 0 ) {
+        } else if (view.getTranslateX() < 0) {
             move(Defines.SCREEN_WIDTH, 0);
             return true;
         } else if (view.getTranslateY() > Defines.SCREEN_HEIGHT) {
@@ -101,9 +104,5 @@ public class GameObject {
             return true;
         }
         return false;
-    }
-
-    public void setView(Node view) {
-        this.view = view;
     }
 }

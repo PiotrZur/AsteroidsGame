@@ -3,18 +3,12 @@ package ateroids;
 import ateroids.GameObjects.*;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -26,22 +20,16 @@ public class AsteroidsApp extends Application {
     private List<GameObject> bullets = new ArrayList<>();
     private List<Enemy> enemies = new ArrayList<>();
     private AnimatedImage explosion;
-    private Player player;
     private UI ui;
-
-    public AssetLoader assetLoader = new AssetLoader();
 
     private Parent createContent() {
         root = new Pane();
         root.setPrefSize(Defines.SCREEN_WIDTH, Defines.SCREEN_HEIGHT);
+        Player.getInstance().setVelocity(new Point2D(1, 0));
 
+        ui = new UI(root);
 
-        player = new Player(assetLoader);
-        player.setVelocity(new Point2D(1, 0));
-
-        ui = new UI(assetLoader, root, player);
-
-        addGameObject(player, Defines.SCREEN_WIDTH / 2, Defines.SCREEN_HEIGHT / 2);
+        addGameObject(Player.getInstance(), Defines.SCREEN_WIDTH / 2, Defines.SCREEN_HEIGHT / 2);
 
         AnimationTimer timer = new AnimationTimer() {
             @Override
@@ -64,8 +52,10 @@ public class AsteroidsApp extends Application {
     }
 
     private void addEnemy(Enemy enemy, double x, double y) {
-        if(x > player.getView().getTranslateX() + player.getWidth() * 2 || x < player.getView().getTranslateX() - player.getWidth()) {
-            if(y > player.getView().getTranslateY() + player.getHeight() * 2 || y < player.getView().getTranslateX() - player.getHeight()) {
+        if (x > Player.getInstance().getView().getTranslateX() + Player.getInstance().getWidth() * 2 ||
+                x < Player.getInstance().getView().getTranslateX() - Player.getInstance().getWidth()) {
+            if (y > Player.getInstance().getView().getTranslateY() + Player.getInstance().getHeight() * 2 ||
+                    y < Player.getInstance().getView().getTranslateX() - Player.getInstance().getHeight()) {
                 enemy.setVelocity(new Point2D(Math.random(), Math.random()));
                 enemies.add(enemy);
                 addGameObject(enemy, x, y);
@@ -75,63 +65,62 @@ public class AsteroidsApp extends Application {
     }
 
     private void onUpdate() {
-        if(player.getHealth()<= 0) {
+        if (Player.getInstance().getHealth() <= 0) {
             ui.showGameOverText();
-            root.getChildren().removeAll(player.getView());
+            root.getChildren().removeAll(Player.getInstance().getView());
             ui.hide();
 
-        } else  {
+        } else {
 
 
-        for (GameObject bullet : bullets) {
-            for (Enemy enemy : enemies) {
-                if (bullet.isColliding(enemy)) {
+            for (GameObject bullet : bullets) {
+                for (Enemy enemy : enemies) {
+                    if (bullet.isColliding(enemy)) {
+                        bullet.setAlive(false);
+                        enemy.setAlive(false);
+                        root.getChildren().removeAll(bullet.getView(), enemy.getView());
+                        ui.addScore(Defines.SCORE);
+                    }
+                }
+                if (bullet.isOutOfScreen()) {
                     bullet.setAlive(false);
-                    enemy.setAlive(false);
-                    root.getChildren().removeAll(bullet.getView(), enemy.getView());
-                    ui.addScore(Defines.SCORE);
+                    root.getChildren().removeAll(bullet.getView());
                 }
             }
-            if (bullet.isOutOfScreen()) {
-                bullet.setAlive(false);
-                root.getChildren().removeAll(bullet.getView());
-            }
-        }
-        for (Enemy enemy : enemies) {
-            enemy.isOutOfScreen();
-            if (player.isColliding(enemy)) {
-                player.hit();
-                explosion = new AnimatedImage(new Image("explosion.png"), 19, 64, 1000000000, 2);
-                explosion.getShowedImage().setTranslateX(player.getView().getTranslateX());
-                explosion.getShowedImage().setTranslateY(player.getView().getTranslateY());
-                root.getChildren().addAll(explosion.getShowedImage());
+            for (Enemy enemy : enemies) {
+                enemy.isOutOfScreen();
+                if (Player.getInstance().isColliding(enemy)) {
+                    Player.getInstance().hit();
+                    explosion = new AnimatedImage(new Image("explosion.png"), 19, 64, 1000000000, 2);
+                    explosion.getShowedImage().setTranslateX(Player.getInstance().getView().getTranslateX());
+                    explosion.getShowedImage().setTranslateY(Player.getInstance().getView().getTranslateY());
+                    root.getChildren().addAll(explosion.getShowedImage());
 
-                for(Enemy enemyToRemowe : enemies) {
+                    for (Enemy enemyToRemowe : enemies) {
                         enemyToRemowe.setAlive(false);
                         root.getChildren().removeAll(enemyToRemowe.getView());
+                    }
+                    enemies.clear();
+                    break;
                 }
-                enemies.clear();
-                break;
             }
+
+
+            bullets.removeIf(GameObject::isDead);
+            enemies.removeIf(GameObject::isDead);
+
+            bullets.forEach(GameObject::update);
+            enemies.forEach(GameObject::update);
+            Player.getInstance().update();
+            Player.getInstance().isOutOfScreen();
+
+
+            if (Math.random() < Defines.ENEMY_SPAWN_RATE) {
+                addEnemy(new Enemy(), Math.random() * root.getPrefWidth(), Math.random() * root.getPrefHeight());
+            }
+            ui.update();
         }
-
-
-        bullets.removeIf(GameObject::isDead);
-        enemies.removeIf(GameObject::isDead);
-
-        bullets.forEach(GameObject::update);
-        enemies.forEach(GameObject::update);
-        player.update();
-        player.isOutOfScreen();
-
-
-
-        if (Math.random() < Defines.ENEMY_SPAWN_RATE) {
-            addEnemy(new Enemy(assetLoader), Math.random() * root.getPrefWidth(), Math.random() * root.getPrefHeight());
-        }
-        ui.update();
-        }
-        if(explosion != null && explosion.isRunning()) {
+        if (explosion != null && explosion.isRunning()) {
             explosion.animate();
         } else if (explosion != null) {
             root.getChildren().removeAll(explosion.getShowedImage());
@@ -146,21 +135,22 @@ public class AsteroidsApp extends Application {
         stage.setFullScreen(Defines.FULLSCREEN);
         stage.getScene().setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.LEFT) {
-                player.rotate(-10);
+                Player.getInstance().rotate(-10);
             } else if (event.getCode() == KeyCode.RIGHT) {
-                player.rotate(10);
+                Player.getInstance().rotate(10);
             } else if (event.getCode() == KeyCode.SPACE) {
-                Bullet bullet = new Bullet(assetLoader);
-                bullet.setVelocity(player.getVelocity().normalize().multiply(15.0));
-                addBullet(bullet, player.getView().getTranslateX() + player.getWidth() / 2 + Math.cos(Math.toRadians(player.getRotation())) * player.getWidth() / 2, player.getView().getTranslateY() + player.getHeight() / 2 + Math.sin(Math.toRadians(player.getRotation())) * player.getWidth() / 2);
+                Bullet bullet = new Bullet();
+                bullet.setVelocity(Player.getInstance().getVelocity().normalize().multiply(15.0));
+                addBullet(bullet, Player.getInstance().getView().getTranslateX() + Player.getInstance().getWidth() / 2 + Math.cos(Math.toRadians(Player.getInstance().getRotation())) * Player.getInstance().getWidth() / 2,
+                        Player.getInstance().getView().getTranslateY() + Player.getInstance().getHeight() / 2 + Math.sin(Math.toRadians(Player.getInstance().getRotation())) * Player.getInstance().getWidth() / 2);
             } else if (event.getCode() == KeyCode.ESCAPE) {
                 System.exit(0);
             } else if (event.getCode() == KeyCode.ENTER) {
-                if(player.getHealth() <= 0) {
-                    player.setHealth(Defines.INITIAL_HEALTH);
-                    player.getView().setTranslateX(Defines.SCREEN_WIDTH / 2);
-                    player.getView().setTranslateX(Defines.SCREEN_HEIGHT / 2);
-                    root.getChildren().add(player.getView());
+                if (Player.getInstance().getHealth() <= 0) {
+                    Player.getInstance().setHealth(Defines.INITIAL_HEALTH);
+                    Player.getInstance().getView().setTranslateX(Defines.SCREEN_WIDTH / 2);
+                    Player.getInstance().getView().setTranslateX(Defines.SCREEN_HEIGHT / 2);
+                    root.getChildren().add(Player.getInstance().getView());
                     ui.show();
                     ui.setScore(0);
                     ui.hideGameOverText();
@@ -170,7 +160,6 @@ public class AsteroidsApp extends Application {
         });
         stage.show();
     }
-
 
     public static void main(String[] args) {
         launch(args);

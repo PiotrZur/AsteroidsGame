@@ -6,9 +6,13 @@ import javafx.scene.image.ImageView;
 
 
 public class Player extends GameObject {
+    private static final double SIZE = Defines.SCREEN_WIDTH / 11.5;
+    private static Player instance = new Player();
+
     private int health;
-    public Player(AssetLoader assetLoader) {
-        super(new ImageView(assetLoader.getPlayer()), 70, 70);
+
+    private Player() {
+        super(new ImageView(AssetLoader.getInstance().getPlayer()), SIZE, SIZE);
         this.health = Defines.INITIAL_HEALTH;
     }
 
@@ -22,5 +26,9 @@ public class Player extends GameObject {
 
     public void hit() {
         this.health -= 1;
+    }
+
+    public static Player getInstance() {
+        return instance;
     }
 }

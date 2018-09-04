@@ -1,11 +1,13 @@
 package ateroids.GameObjects;
 
 import ateroids.AssetLoader;
+import ateroids.Defines;
 import javafx.scene.image.ImageView;
 
 
 public class Enemy extends GameObject {
-    public Enemy(AssetLoader assetLoader) {
-        super(new ImageView(assetLoader.getEnemy()), 70, 70);
+    private static final double SIZE = Defines.SCREEN_WIDTH / 11.5;
+    public Enemy() {
+        super(new ImageView(AssetLoader.getInstance().getEnemy()), SIZE, SIZE);
     }
 }

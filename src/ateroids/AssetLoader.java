@@ -3,7 +3,10 @@ package ateroids;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 
+//Singleton that loads game assets to memory
 public class AssetLoader {
+    private static AssetLoader instance = new AssetLoader();
+
     private Image player;
     private Image enemy;
     private Image background;
@@ -22,6 +25,10 @@ public class AssetLoader {
 
         background = new Image("background.jpg", Defines.SCREEN_WIDTH, Defines.SCREEN_HEIGHT, false, false);
 
+    }
+
+    public static AssetLoader getInstance() {
+        return instance;
     }
 
     public Image getPlayer() {
