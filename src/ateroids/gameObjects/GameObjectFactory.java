@@ -1,13 +1,13 @@
-package ateroids.GameObjects;
+package ateroids.gameObjects;
 
-import ateroids.AssetLoader;
+import ateroids.graphics.AssetLoader;
 import ateroids.Defines;
 import javafx.geometry.Point2D;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
-//class used to construct GameObjects
+//class used to construct gameObjects
 public class GameObjectFactory {
     private AssetLoader assetLoader;
 

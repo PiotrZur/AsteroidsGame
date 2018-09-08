@@ -1,4 +1,4 @@
-package ateroids.GameObjects;
+package ateroids.gameObjects;
 
 import ateroids.Defines;
 import javafx.geometry.Bounds;

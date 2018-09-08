@@ -1,6 +1,7 @@
-package ateroids;
+package ateroids.ui;
 
-import ateroids.GameObjects.GameObject;
+import ateroids.Defines;
+import ateroids.graphics.AssetLoader;
 import javafx.scene.Group;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -9,21 +10,19 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-public class UI {
+public class UIController {
     private Pane root;
     private StackPane healthBar;
     private Text scoreMeter;
     private Text controls;
     private int score;
     private Group gameOverUI;
-    private GameObject player;
     private AssetLoader assetLoader;
 
-    public UI(Pane root, GameObject player, AssetLoader assetLoader) {
+    public UIController(Pane root, AssetLoader assetLoader) {
         this.root = root;
         this.score = 0;
         this.healthBar = new StackPane();
-        this.player = player;
         this.assetLoader = assetLoader;
 
         ImageView background = new ImageView(assetLoader.getBackground());
@@ -37,26 +36,24 @@ public class UI {
         scoreMeter.setFill(Color.YELLOW);
 
 
-        update();
+        updateHealth(Defines.INITIAL_PLAYER_HEALTH);
 
         root.getChildren().addAll(background, controls, healthBar, scoreMeter);
     }
 
-    public void update() {
+    public void updateHealth(int playerHealth) {
         healthBar.getChildren().clear();
-        for (int i = 0; i < player.getHealth(); i++) {
+        for (int i = 0; i < playerHealth; i++) {
             ImageView icon = new ImageView(assetLoader.getHealth());
             icon.setTranslateX(15 + (10 + assetLoader.getHealth().getWidth()) * i);
             icon.setTranslateY(15);
             healthBar.getChildren().add(icon);
         }
-
-        scoreMeter.setText("Score: " + Integer.toString(score));
     }
 
     public void addScore(int value) {
         this.score += value;
-        update();
+        scoreMeter.setText("Score: " + Integer.toString(score));
     }
 
     public void hide() {

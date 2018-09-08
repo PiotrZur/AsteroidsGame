@@ -1,5 +1,6 @@
-package ateroids;
+package ateroids.graphics;
 
+import ateroids.Defines;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;
