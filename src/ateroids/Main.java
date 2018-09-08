@@ -14,22 +14,27 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AsteroidsApp extends Application {
+public class Main extends Application {
 
     private Pane root;
     private List<GameObject> bullets = new ArrayList<>();
-    private List<Enemy> enemies = new ArrayList<>();
+    private List<GameObject> enemies = new ArrayList<>();
     private AnimatedImage explosion;
     private UI ui;
+    private  GameObject player;
+    private GameObjectFactory gameObjectFactory;
+    AssetLoader assetLoader;
 
     private Parent createContent() {
         root = new Pane();
         root.setPrefSize(Defines.SCREEN_WIDTH, Defines.SCREEN_HEIGHT);
-        Player.getInstance().setVelocity(new Point2D(1, 0));
+        assetLoader = new AssetLoader();
+        gameObjectFactory = new GameObjectFactory(assetLoader);
+        player = gameObjectFactory.createPlayer();
 
-        ui = new UI(root);
+        ui = new UI(root, player, assetLoader);
 
-        addGameObject(Player.getInstance(), Defines.SCREEN_WIDTH / 2, Defines.SCREEN_HEIGHT / 2);
+        addGameObject(player, Defines.SCREEN_WIDTH / 2, Defines.SCREEN_HEIGHT / 2);
 
         AnimationTimer timer = new AnimationTimer() {
             @Override
@@ -46,17 +51,16 @@ public class AsteroidsApp extends Application {
         root.getChildren().add(object.getView());
     }
 
-    private void addBullet(Bullet bullet, double x, double y) {
+    private void addBullet(GameObject bullet, double x, double y) {
         bullets.add(bullet);
         addGameObject(bullet, x, y);
     }
 
-    private void addEnemy(Enemy enemy, double x, double y) {
-        if (x > Player.getInstance().getView().getTranslateX() + Player.getInstance().getWidth() * 2 ||
-                x < Player.getInstance().getView().getTranslateX() - Player.getInstance().getWidth()) {
-            if (y > Player.getInstance().getView().getTranslateY() + Player.getInstance().getHeight() * 2 ||
-                    y < Player.getInstance().getView().getTranslateX() - Player.getInstance().getHeight()) {
-                enemy.setVelocity(new Point2D(Math.random(), Math.random()));
+    private void addEnemy(GameObject enemy, double x, double y) {
+        if (x > player.getView().getTranslateX() + player.getWidth() * 2 ||
+                x < player.getView().getTranslateX() - player.getWidth()) {
+            if (y > player.getView().getTranslateY() + player.getHeight() * 2 ||
+                    y < player.getView().getTranslateX() - player.getHeight()) {
                 enemies.add(enemy);
                 addGameObject(enemy, x, y);
             }
@@ -65,39 +69,37 @@ public class AsteroidsApp extends Application {
     }
 
     private void onUpdate() {
-        if (Player.getInstance().getHealth() <= 0) {
+        if (player.isDead()) {
             ui.showGameOverText();
-            root.getChildren().removeAll(Player.getInstance().getView());
+            root.getChildren().removeAll(player.getView());
             ui.hide();
 
         } else {
-
-
             for (GameObject bullet : bullets) {
-                for (Enemy enemy : enemies) {
+                for (GameObject enemy : enemies) {
                     if (bullet.isColliding(enemy)) {
-                        bullet.setAlive(false);
-                        enemy.setAlive(false);
+                        bullet.hit();
+                        enemy.hit();
                         root.getChildren().removeAll(bullet.getView(), enemy.getView());
-                        ui.addScore(Defines.SCORE);
+                        ui.addScore(Defines.SCORE_PER_KILL);
                     }
                 }
                 if (bullet.isOutOfScreen()) {
-                    bullet.setAlive(false);
+                    bullet.hit();
                     root.getChildren().removeAll(bullet.getView());
                 }
             }
-            for (Enemy enemy : enemies) {
+            for (GameObject enemy : enemies) {
                 enemy.isOutOfScreen();
-                if (Player.getInstance().isColliding(enemy)) {
-                    Player.getInstance().hit();
+                if (player.isColliding(enemy)) {
+                    player.hit();
                     explosion = new AnimatedImage(new Image("explosion.png"), 19, 64, 1000000000, 2);
-                    explosion.getShowedImage().setTranslateX(Player.getInstance().getView().getTranslateX());
-                    explosion.getShowedImage().setTranslateY(Player.getInstance().getView().getTranslateY());
+                    explosion.getShowedImage().setTranslateX(player.getView().getTranslateX());
+                    explosion.getShowedImage().setTranslateY(player.getView().getTranslateY());
                     root.getChildren().addAll(explosion.getShowedImage());
 
-                    for (Enemy enemyToRemowe : enemies) {
-                        enemyToRemowe.setAlive(false);
+                    for (GameObject enemyToRemowe : enemies) {
+                        enemyToRemowe.hit();
                         root.getChildren().removeAll(enemyToRemowe.getView());
                     }
                     enemies.clear();
@@ -111,12 +113,13 @@ public class AsteroidsApp extends Application {
 
             bullets.forEach(GameObject::update);
             enemies.forEach(GameObject::update);
-            Player.getInstance().update();
-            Player.getInstance().isOutOfScreen();
+            player.update();
+            player.isOutOfScreen();
 
 
             if (Math.random() < Defines.ENEMY_SPAWN_RATE) {
-                addEnemy(new Enemy(), Math.random() * root.getPrefWidth(), Math.random() * root.getPrefHeight());
+                GameObject newEnemy = gameObjectFactory.createEnemy();
+                addEnemy(newEnemy, Math.random() * root.getPrefWidth(), Math.random() * root.getPrefHeight());
             }
             ui.update();
         }
@@ -135,22 +138,21 @@ public class AsteroidsApp extends Application {
         stage.setFullScreen(Defines.FULLSCREEN);
         stage.getScene().setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.LEFT) {
-                Player.getInstance().rotate(-10);
+                player.rotate(-10);
             } else if (event.getCode() == KeyCode.RIGHT) {
-                Player.getInstance().rotate(10);
+                player.rotate(10);
             } else if (event.getCode() == KeyCode.SPACE) {
-                Bullet bullet = new Bullet();
-                bullet.setVelocity(Player.getInstance().getVelocity().normalize().multiply(15.0));
-                addBullet(bullet, Player.getInstance().getView().getTranslateX() + Player.getInstance().getWidth() / 2 + Math.cos(Math.toRadians(Player.getInstance().getRotation())) * Player.getInstance().getWidth() / 2,
-                        Player.getInstance().getView().getTranslateY() + Player.getInstance().getHeight() / 2 + Math.sin(Math.toRadians(Player.getInstance().getRotation())) * Player.getInstance().getWidth() / 2);
+                GameObject bullet = gameObjectFactory.createBullet(player.getVelocity().normalize().multiply(15.0));
+                addBullet(bullet, player.getView().getTranslateX() + player.getWidth() / 2 + Math.cos(Math.toRadians(player.getRotation())) * player.getWidth() / 2,
+                        player.getView().getTranslateY() + player.getHeight() / 2 + Math.sin(Math.toRadians(player.getRotation())) * player.getWidth() / 2);
             } else if (event.getCode() == KeyCode.ESCAPE) {
                 System.exit(0);
             } else if (event.getCode() == KeyCode.ENTER) {
-                if (Player.getInstance().getHealth() <= 0) {
-                    Player.getInstance().setHealth(Defines.INITIAL_HEALTH);
-                    Player.getInstance().getView().setTranslateX(Defines.SCREEN_WIDTH / 2);
-                    Player.getInstance().getView().setTranslateX(Defines.SCREEN_HEIGHT / 2);
-                    root.getChildren().add(Player.getInstance().getView());
+                if (player.getHealth() <= 0) {
+                    player.revive(Defines.INITIAL_PLAYER_HEALTH);
+                    player.getView().setTranslateX(Defines.SCREEN_WIDTH / 2);
+                    player.getView().setTranslateX(Defines.SCREEN_HEIGHT / 2);
+                    root.getChildren().add(player.getView());
                     ui.show();
                     ui.setScore(0);
                     ui.hideGameOverText();

@@ -1,6 +1,6 @@
 package ateroids;
 
-import ateroids.GameObjects.Player;
+import ateroids.GameObjects.GameObject;
 import javafx.scene.Group;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -16,13 +16,17 @@ public class UI {
     private Text controls;
     private int score;
     private Group gameOverUI;
+    private GameObject player;
+    private AssetLoader assetLoader;
 
-    public UI(Pane root) {
+    public UI(Pane root, GameObject player, AssetLoader assetLoader) {
         this.root = root;
         this.score = 0;
         this.healthBar = new StackPane();
+        this.player = player;
+        this.assetLoader = assetLoader;
 
-        ImageView background = new ImageView(AssetLoader.getInstance().getBackground());
+        ImageView background = new ImageView(assetLoader.getBackground());
 
         this.controls = new Text(15, Defines.SCREEN_HEIGHT - 15, "Rotate ship: ←→     Fire: SPACE     Exit: ESCAPE");
         controls.setFont(new Font("Comic Sans MS Bold", 20));
@@ -40,9 +44,9 @@ public class UI {
 
     public void update() {
         healthBar.getChildren().clear();
-        for (int i = 0; i < Player.getInstance().getHealth(); i++) {
-            ImageView icon = new ImageView(AssetLoader.getInstance().getHealth());
-            icon.setTranslateX(15 + (10 + AssetLoader.getInstance().getHealth().getWidth()) * i);
+        for (int i = 0; i < player.getHealth(); i++) {
+            ImageView icon = new ImageView(assetLoader.getHealth());
+            icon.setTranslateX(15 + (10 + assetLoader.getHealth().getWidth()) * i);
             icon.setTranslateY(15);
             healthBar.getChildren().add(icon);
         }

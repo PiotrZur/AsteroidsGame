@@ -1,6 +1,5 @@
 package ateroids;
 
-import ateroids.GameObjects.GameObject;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
@@ -14,8 +13,8 @@ public class AnimatedImage {
     private ImageView showedImage;
     private double destinedSize;
 
-    public AnimatedImage (Image spriteImage, int framesNumber,
-                          int frameSize, long duration, double frameRatio) {
+    public AnimatedImage(Image spriteImage, int framesNumber,
+                         int frameSize, long duration, double frameRatio) {
         this.running = true;
         this.frames = new WritableImage[framesNumber];
         this.duration = duration;
@@ -23,13 +22,13 @@ public class AnimatedImage {
 
         int spriteImageRow = 0;
         int spritesInRow = (int) (spriteImage.getWidth() / frameSize);
-        for(int i = 0; i < framesNumber; i ++) {
-        if((i + 1 - spriteImageRow * spritesInRow) > spritesInRow) {
-            spriteImageRow++;
-        }
-        frames[i] = new WritableImage(spriteImage.getPixelReader(),
-                (i - spriteImageRow*spritesInRow)* frameSize,
-                spriteImageRow*frameSize, frameSize, frameSize);
+        for (int i = 0; i < framesNumber; i++) {
+            if ((i + 1 - spriteImageRow * spritesInRow) > spritesInRow) {
+                spriteImageRow++;
+            }
+            frames[i] = new WritableImage(spriteImage.getPixelReader(),
+                    (i - spriteImageRow * spritesInRow) * frameSize,
+                    spriteImageRow * frameSize, frameSize, frameSize);
         }
         frameCounter = 0;
         showedImage = new ImageView(frames[frameCounter]);
@@ -38,6 +37,7 @@ public class AnimatedImage {
         lastFrameTime = 0;
 
     }
+
     public void animate() {
         if (lastFrameTime == 0) {
             lastFrameTime = System.nanoTime();
