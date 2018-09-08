@@ -1,10 +1,9 @@
 package ateroids;
 
+import ateroids.animation.Explosion;
 import ateroids.gameObjects.GameObject;
 import ateroids.gameObjects.GameObjectFactory;
-import ateroids.graphics.AnimatedImage;
 import ateroids.ui.UIController;
-import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ public class GameState {
     private List<GameObject> enemies;
     private Pane root;
     private UIController uiController;
-    private AnimatedImage explosion;
+    private Explosion explosion;
 
     public GameState(GameObjectFactory gameObjectFactory, Pane root, UIController uiController) {
         this.gameObjectFactory = gameObjectFactory;
@@ -27,6 +26,7 @@ public class GameState {
         enemies = new ArrayList<>();
         player = gameObjectFactory.createPlayer();
         addGameObject(player, Defines.SCREEN_WIDTH / 2, Defines.SCREEN_HEIGHT / 2);
+        explosion = new Explosion(root);
     }
 
     private void addGameObject(GameObject object, double x, double y) {
@@ -50,6 +50,7 @@ public class GameState {
         }
 
     }
+
     public void fire() {
         GameObject bullet = gameObjectFactory.createBullet(player.getVelocity().normalize().multiply(15.0));
         addBullet(bullet, player.getView().getTranslateX() + player.getWidth() / 2 + Math.cos(Math.toRadians(player.getRotation())) * player.getWidth() / 2,
@@ -81,20 +82,20 @@ public class GameState {
     }
 
     public void checkBulletsCollisions() {
-            for (GameObject bullet : bullets) {
-                for (GameObject enemy : enemies) {
-                    if (bullet.isColliding(enemy)) {
-                        bullet.hit();
-                        enemy.hit();
-                        root.getChildren().removeAll(bullet.getView(), enemy.getView());
-                        uiController.addScore(Defines.SCORE_PER_KILL);
-                    }
-                }
-                if (bullet.isOutOfScreen()) {
+        for (GameObject bullet : bullets) {
+            for (GameObject enemy : enemies) {
+                if (bullet.isColliding(enemy)) {
                     bullet.hit();
-                    root.getChildren().removeAll(bullet.getView());
+                    enemy.hit();
+                    root.getChildren().removeAll(bullet.getView(), enemy.getView());
+                    uiController.addScore(Defines.SCORE_PER_KILL);
                 }
             }
+            if (bullet.isOutOfScreen()) {
+                bullet.hit();
+                root.getChildren().removeAll(bullet.getView());
+            }
+        }
     }
 
     public void checkEnemyCollisions() {
@@ -103,7 +104,7 @@ public class GameState {
             if (player.isColliding(enemy)) {
                 player.hit();
                 uiController.updateHealth(player.getHealth());
-                animeteExplosion();
+                explosion.start(player.getView().getTranslateX(), player.getView().getTranslateY());
                 for (GameObject enemyToRemowe : enemies) {
                     enemyToRemowe.hit();
                     root.getChildren().removeAll(enemyToRemowe.getView());
@@ -114,13 +115,6 @@ public class GameState {
         }
     }
 
-    public void animeteExplosion() {
-        explosion = new AnimatedImage(new Image("explosion.png"), 19, 64, 1000000000, 2);
-        explosion.getShowedImage().setTranslateX(player.getView().getTranslateX());
-        explosion.getShowedImage().setTranslateY(player.getView().getTranslateY());
-        root.getChildren().addAll(explosion.getShowedImage());
-    }
-
     public void updateObjects() {
         bullets.removeIf(GameObject::isDead);
         enemies.removeIf(GameObject::isDead);
@@ -129,13 +123,10 @@ public class GameState {
         enemies.forEach(GameObject::update);
         player.update();
         player.isOutOfScreen();
+    }
 
-        if (explosion != null && explosion.isRunning()) {
-            explosion.animate();
-        } else if (explosion != null) {
-            root.getChildren().removeAll(explosion.getShowedImage());
-            explosion = null;
-        }
+    public void updateAnimations() {
+        explosion.update();
     }
 
     public void spawnEnemy() {

@@ -1,7 +1,7 @@
 package ateroids.ui;
 
 import ateroids.Defines;
-import ateroids.graphics.AssetLoader;
+import ateroids.assets.AssetLoader;
 import javafx.scene.Group;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;

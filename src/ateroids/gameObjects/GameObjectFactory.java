@@ -1,6 +1,6 @@
 package ateroids.gameObjects;
 
-import ateroids.graphics.AssetLoader;
+import ateroids.assets.AssetLoader;
 import ateroids.Defines;
 import javafx.geometry.Point2D;
 import javafx.scene.image.ImageView;

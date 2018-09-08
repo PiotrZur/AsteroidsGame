@@ -1,4 +1,4 @@
-package ateroids.graphics;
+package ateroids.animation;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;

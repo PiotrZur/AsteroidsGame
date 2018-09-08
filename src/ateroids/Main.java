@@ -1,7 +1,7 @@
 package ateroids;
 
 import ateroids.gameObjects.*;
-import ateroids.graphics.AssetLoader;
+import ateroids.assets.AssetLoader;
 import ateroids.ui.UIController;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -69,6 +69,7 @@ public class Main extends Application {
         gameState.checkBulletsCollisions();
         gameState.checkEnemyCollisions();
         gameState.updateObjects();
+        gameState.updateAnimations();
         gameState.spawnEnemy();
     }
 }
