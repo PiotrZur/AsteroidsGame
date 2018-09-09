@@ -1,4 +1,4 @@
-package asteroids.gameObjects;
+package asteroids;
 
 import ateroids.Defines;
 import ateroids.gameObjects.GameObject;
@@ -13,6 +13,7 @@ public class GameObjectTest {
     Point2D velocity;
     Rectangle view;
     GameObject gameObject;
+
     @Before
     public void setUp() throws Exception {
         velocity = new Point2D(2, 3);
@@ -73,6 +74,7 @@ public class GameObjectTest {
         gameObject.isOutOfScreen();
         assertEquals(Defines.SCREEN_WIDTH - 10.0, gameObject.getView().getTranslateX(), 1);
     }
+
     @org.junit.Test
     public void outOfScreenRightBorderTest() {
         gameObject.move(10 + Defines.SCREEN_WIDTH, 0);

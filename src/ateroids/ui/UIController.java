@@ -18,6 +18,7 @@ public class UIController {
     private int score;
     private Group gameOverUI;
     private AssetLoader assetLoader;
+    private int playerHealth;
 
     public UIController(Pane root, AssetLoader assetLoader) {
         this.root = root;
@@ -42,18 +43,15 @@ public class UIController {
     }
 
     public void updateHealth(int playerHealth) {
-        healthBar.getChildren().clear();
-        for (int i = 0; i < playerHealth; i++) {
-            ImageView icon = new ImageView(assetLoader.getHealth());
-            icon.setTranslateX(15 + (10 + assetLoader.getHealth().getWidth()) * i);
-            icon.setTranslateY(15);
-            healthBar.getChildren().add(icon);
+        if (this.playerHealth != playerHealth) {
+            healthBar.getChildren().clear();
+            for (int i = 0; i < playerHealth; i++) {
+                ImageView icon = new ImageView(assetLoader.getHealth());
+                icon.setTranslateX(15 + (10 + assetLoader.getHealth().getWidth()) * i);
+                icon.setTranslateY(15);
+                healthBar.getChildren().add(icon);
+            }
         }
-    }
-
-    public void addScore(int value) {
-        this.score += value;
-        scoreMeter.setText("Score: " + Integer.toString(score));
     }
 
     public void hide() {
@@ -100,5 +98,12 @@ public class UIController {
 
     public void hideGameOverText() {
         root.getChildren().remove(gameOverUI);
+    }
+
+    public void updateScore(int score) {
+        if (this.score != score) {
+            this.score = score;
+            scoreMeter.setText("Score: " + score);
+        }
     }
 }

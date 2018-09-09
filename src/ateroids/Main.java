@@ -38,7 +38,7 @@ public class Main extends Application {
         assetLoader = new AssetLoader();
         gameObjectFactory = new GameObjectFactory(assetLoader);
         uiController = new UIController(root, assetLoader);
-        gameState = new GameState(gameObjectFactory, root, uiController);
+        gameState = new GameState(gameObjectFactory.createPlayer(), root);
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -55,22 +55,42 @@ public class Main extends Application {
             } else if (event.getCode() == KeyCode.RIGHT) {
                 gameState.getPlayer().rotate(10);
             } else if (event.getCode() == KeyCode.SPACE) {
-                gameState.fire();
+                gameState.fire(gameObjectFactory.createBullet(gameState.getPlayer().getVelocity().normalize().multiply(15.0)));
             } else if (event.getCode() == KeyCode.ESCAPE) {
                 System.exit(0);
             } else if (event.getCode() == KeyCode.ENTER) {
+                if(gameState.getPlayer().isDead()) {
+
                 gameState.restartGame();
+                uiController.show();
+                uiController.setScore(0);
+                uiController.hideGameOverText();
+                uiController.updateHealth(gameState.getPlayer().getHealth());
+                }
             }
         });
     }
 
     private void onUpdate() {
-        gameState.checkIfPlayerIsAlive();
-        gameState.checkBulletsCollisions();
-        gameState.checkEnemyCollisions();
-        gameState.updateObjects();
-        gameState.updateAnimations();
-        gameState.spawnEnemy();
+        if(gameState.checkIfPlayerIsAlive()) {
+            gameState.checkBulletsAreOutOfScreen();
+            gameState.checkEnemyCollisions();
+            gameState.updateObjects();
+            gameState.updateAnimations();
+            spawnEnemy();
+            uiController.updateHealth(gameState.getPlayer().getHealth());
+            uiController.updateScore(gameState.getScore());
+        } else {
+            uiController.showGameOverText();
+            uiController.hide();
+        }
+    }
+
+    private void spawnEnemy() {
+        if (Math.random() < Defines.ENEMY_SPAWN_RATE) {
+            GameObject newEnemy = gameObjectFactory.createEnemy();
+            gameState.addEnemy(newEnemy, Math.random() * root.getPrefWidth(), Math.random() * root.getPrefHeight());
+        }
     }
 }
 
