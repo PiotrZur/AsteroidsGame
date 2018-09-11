@@ -11,7 +11,7 @@ public class Explosion {
         this.root = root;
     }
     public void start(double x, double y) {
-        this.animatedImage = new AnimatedImage(new Image("explosion.png"), 19, 64, 1000000000, 2);
+        this.animatedImage = new AnimatedImage(new Image("explosion.png"), 19, 64, 500000000L, 2);
         animatedImage.getShowedImage().setTranslateX(x);
         animatedImage.getShowedImage().setTranslateY(y);
         root.getChildren().add(animatedImage.getShowedImage());
@@ -23,5 +23,12 @@ public class Explosion {
             root.getChildren().remove(animatedImage.getShowedImage());
             animatedImage = null;
         }
+    }
+
+    public boolean isFinished() {
+        if(animatedImage!= null) {
+            return false;
+        }
+        return true;
     }
 }

@@ -12,7 +12,7 @@ public class GameState {
     private List<GameObject> bullets;
     private List<GameObject> enemies;
     private Pane root;
-    private Explosion explosion;
+    private ArrayList<Explosion> explosions;
     private int score;
 
     public GameState(GameObject player, Pane root) {
@@ -21,8 +21,8 @@ public class GameState {
         enemies = new ArrayList<>();
         this.player = player;
         this.score = 0;
+        explosions = new ArrayList<>();
         addGameObject(player, Defines.SCREEN_WIDTH / 2, Defines.SCREEN_HEIGHT / 2);
-        explosion = new Explosion(root);
     }
 
     public void addGameObject(GameObject object, double x, double y) {
@@ -86,7 +86,9 @@ public class GameState {
             enemy.isOutOfScreen();
             if (player.isColliding(enemy)) {
                 player.hit();
+                Explosion explosion = new Explosion(root);
                 explosion.start(player.getView().getTranslateX(), player.getView().getTranslateY());
+                explosions.add(explosion);
                 for (GameObject enemyToRemove : enemies) {
                     enemyToRemove.hit();
                     root.getChildren().removeAll(enemyToRemove.getView());
@@ -98,6 +100,9 @@ public class GameState {
                 if (bullet.isColliding(enemy)) {
                     bullet.hit();
                     enemy.hit();
+                    Explosion explosion = new Explosion(root);
+                    explosion.start(enemy.getView().getTranslateX(), enemy.getView().getTranslateY());
+                    explosions.add(explosion);
                     root.getChildren().removeAll(bullet.getView(), enemy.getView());
                     score += Defines.SCORE_PER_KILL;
                 }
@@ -116,7 +121,10 @@ public class GameState {
     }
 
     public void updateAnimations() {
-        explosion.update();
+            for(Explosion explosion : explosions) {
+                explosion.update();
+            }
+            explosions.removeIf(Explosion::isFinished);
     }
 
     public List<GameObject> getBullets() {

@@ -44,6 +44,7 @@ public class AnimatedImage {
         }
         if ((System.nanoTime() - lastFrameTime) >= (duration / frames.length)) {
             frameCounter++;
+            lastFrameTime = System.nanoTime();
             if ((frameCounter + 1) > frames.length) {
                 running = false;
             } else {
