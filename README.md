@@ -3,8 +3,16 @@ Game based on classic Atari asteroid game. Player needs to shoot asteroids using
 using arrow keys in order to avoid collision. Animations, collision and graphix is created in JavaFX.
 Application have following classes:
 
-* AsteroidsApp - starting point of aplication and all game mechanics.
-* AssetLoader - Singleton taht loads graphical assets from hard drive to memory.
-* AnimatedImage - class used to animate ship explosion.
-* UI - controls design and behaviour of UI elements.
-* GameObject - controls movement, rotation and collision of objects in game. Have sublcaesses of Enemy, Bullet and Player.
+* Main - starting point of aplication and game loop.
+* Defines - static default values container.
+* GameState - Game logic.
+* animation package
+  * AnimatedImage - class used to create animation from sprite sheet.
+  * Explosion - animated explosion of ship.
+* assets package
+  * AssetLoader - loads graphical assets from hard drive to memory.
+* gameObjects package
+  * gameObject - controls movement, rotation and collision of objects in game.
+  * GameObjcetFactory -facotry class, build enemies, bullets and player.
+* ui package
+  * UIController - controls design and behaviour of UI elements
