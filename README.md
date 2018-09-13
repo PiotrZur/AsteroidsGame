@@ -1,18 +1,10 @@
 # AsteroidsGame 
-Game based on classic Atari asteroid game. Player needs to shoot asteroids using space bar and rotate space ship
-using arrow keys in order to avoid collision. Animations, collision and graphix is created in JavaFX.
-Application have following classes:
+Game based on classic Atari asteroid game from 80’s. Player is controlling space ship flying through the galaxy, shooting randomly generated asteroids.
 
-* Main - starting point of aplication and game loop.
-* Defines - static default values container.
-* GameState - Game logic.
-* animation package
-  * AnimatedImage - class used to create animation from sprite sheet.
-  * Explosion - animated explosion of ship.
-* assets package
-  * AssetLoader - loads graphical assets from hard drive to memory.
-* gameObjects package
-  * gameObject - controls movement, rotation and collision of objects in game.
-  * GameObjcetFactory -facotry class, build enemies, bullets and player.
-* ui package
-  * UIController - controls design and behaviour of UI elements
+<B>Technologies:</B> Java 8 SE, JavaFX, JUnit, Git
+
+<B>Challenges:</B>
+* Implementation of accurate object transformations, especially rotating and moving across screen in 2D environment
+* Designing precise collision system in JavaFX framework, that provides playability as collision is major mechanic in game
+* Created special JUnit ClassRunner to address problem of unit test requiring JavaFX application being run in background
+* Creating animations for explosions in game in order to add some dynamics to gameplay
