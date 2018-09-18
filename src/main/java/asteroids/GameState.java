@@ -37,10 +37,10 @@ public class GameState {
     }
 
     public void addEnemy(GameObject enemy, double x, double y) {
-        if (x > player.getView().getTranslateX() + player.getWidth() * 2 ||
-                x < player.getView().getTranslateX() - player.getWidth()) {
-            if (y > player.getView().getTranslateY() + player.getHeight() * 2 ||
-                    y < player.getView().getTranslateX() - player.getHeight()) {
+        if (x > player.getView().getTranslateX() + player.getWidth() * 2.5 ||
+                x < player.getView().getTranslateX() - player.getWidth()*1.5) {
+            if (y > player.getView().getTranslateY() + player.getHeight() * 2.0 ||
+                    y < player.getView().getTranslateX() - player.getHeight()*1.5) {
                 enemies.add(enemy);
                 addGameObject(enemy, x, y);
             }
