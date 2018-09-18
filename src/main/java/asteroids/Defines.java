@@ -1,6 +1,4 @@
-package ateroids;
-
-import javafx.stage.Screen;
+package asteroids;
 
 public class Defines {
     public static final boolean FULLSCREEN = false;

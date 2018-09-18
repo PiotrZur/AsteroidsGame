@@ -1,7 +1,8 @@
-package ateroids;
+package asteroids;
 
-import ateroids.animation.Explosion;
-import ateroids.gameObjects.GameObject;
+
+import asteroids.animation.Explosion;
+import asteroids.gameObjects.GameObject;
 import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;

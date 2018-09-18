@@ -1,7 +1,7 @@
-package ateroids.ui;
+package asteroids.ui;
 
-import ateroids.Defines;
-import ateroids.assets.AssetLoader;
+import asteroids.Defines;
+import asteroids.assets.AssetLoader;
 import javafx.scene.Group;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;

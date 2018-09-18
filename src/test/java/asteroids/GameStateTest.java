@@ -1,9 +1,8 @@
 package asteroids;
 
-import ateroids.Defines;
-import ateroids.GameState;
-import ateroids.gameObjects.GameObject;
+import asteroids.gameObjects.GameObject;
 import javaFXTester.JFXClassRunner;
+
 import javafx.geometry.Point2D;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;

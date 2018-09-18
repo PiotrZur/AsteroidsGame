@@ -1,6 +1,6 @@
-package ateroids.assets;
+package asteroids.assets;
 
-import ateroids.Defines;
+import asteroids.Defines;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.WritableImage;

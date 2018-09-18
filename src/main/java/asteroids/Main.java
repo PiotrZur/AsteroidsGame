@@ -1,8 +1,10 @@
-package ateroids;
+package asteroids;
 
-import ateroids.gameObjects.*;
-import ateroids.assets.AssetLoader;
-import ateroids.ui.UIController;
+
+import asteroids.assets.AssetLoader;
+import asteroids.gameObjects.GameObject;
+import asteroids.gameObjects.GameObjectFactory;
+import asteroids.ui.UIController;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;

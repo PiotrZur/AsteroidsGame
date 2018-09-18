@@ -1,6 +1,6 @@
-package ateroids.gameObjects;
+package asteroids.gameObjects;
 
-import ateroids.Defines;
+import asteroids.Defines;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;

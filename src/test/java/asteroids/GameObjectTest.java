@@ -1,7 +1,7 @@
 package asteroids;
 
-import ateroids.Defines;
-import ateroids.gameObjects.GameObject;
+
+import asteroids.gameObjects.GameObject;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;

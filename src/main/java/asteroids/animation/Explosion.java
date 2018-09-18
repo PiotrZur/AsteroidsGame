@@ -1,4 +1,4 @@
-package ateroids.animation;
+package asteroids.animation;
 
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;

@@ -1,7 +1,7 @@
-package ateroids.gameObjects;
+package asteroids.gameObjects;
 
-import ateroids.assets.AssetLoader;
-import ateroids.Defines;
+import asteroids.Defines;
+import asteroids.assets.AssetLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
